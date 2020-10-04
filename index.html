@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Equitable Monthly Rent Calculator</title>
+</head>
+<body>
+  <h1>Calculadora equitativa de mensualidad</h1> 
+    <form onsubmit="return false;">
+      <label style="color:red;" for="salarioA">Salario A:</label>
+      <input type="number" required id="sA">
+      </br>
+
+      <label style="color:blue;" for="salarioB">Salario B:</label>
+      <input type="number" required id="sB">
+      </br>
+
+      <label for="mensualidad">Mensualidad:</label>
+      <input type="number" required id="mensualidad">
+      </br>
+
+      <label for="ratioMode">Tener en cuenta el ratio entre salarios?</label>
+      <input type="checkbox" id="ratioMode">
+      </br>
+
+      <input type="submit" onclick="calcRent()" value="Calcular">
+    </form>
+
+  <h2>Resultado:</h2>
+  <h3 style="color:red;">A paga: </h3><span id="resA"></span>
+  <h3 style="color:blue;">B paga: </h3><span id="resB"></span>
+</body>
+
+<script type="application/javascript">
+  function calcRent(){
+    var sA = Number(document.querySelector("#sA").value); 
+    var sB = Number(document.querySelector("#sB").value);
+    var men = Number(document.querySelector("#mensualidad").value);
+
+    var highest = sA > sB ? sA : 
+                  (sB > sA ? sB : sA/*Equals*/);
+
+    var lowest = sA == highest ? sB : sA;
+    //debugger;
+    var ratio = document.querySelector("#ratioMode").checked ? highest / lowest : 1;
+
+    var xPercent = solveEquation(ratio,highest,lowest,men); 
+    console.log(xPercent,"Ratio: "+ratio);
+    var totA = ratio * (xPercent * sA) / 100;
+    var totB = (xPercent * sB) / 100;
+
+    document.querySelector("#resA").innerHTML = totA;
+    document.querySelector("#resB").innerHTML = totB;
+
+    function solveEquation(ratio,highest,lowest,men){
+    /*
+    - Equation -
+      ratio * (x * highest)/100 + (x * lowest)/100 = mensualidad 
+    */
+      let x = null;
+      let groupH = (highest/100) * ratio;
+      let groupL = (lowest/100);
+      let sumGroup = groupH + groupL;
+      x = men / sumGroup;
+      return x;
+    }
+  }
+</script>
+
+</html>
